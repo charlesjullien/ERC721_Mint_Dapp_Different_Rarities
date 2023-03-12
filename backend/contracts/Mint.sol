@@ -36,21 +36,26 @@ contract Mint is ERC721URIStorage, Ownable {
     address payable incAccount;
     uint public balance;
 
-    bool public canWhitelistforPreMint;
-    bool public canWhitelistforFreeMint;
+    // bool public canWhitelistforPreMint;
+    // bool public canWhitelistforFreeMint;
     uint public goldCost = 1 ether; // 25 MATIC normally
     uint public diamondCost = 5 ether; // 130 MATIC normally
     uint private nonce;
+    uint private revealTime;
 
     struct User {
         uint diamondsBought;
         uint goldsBought;
+        uint[] ids;
+        mapping(uint => uint) timeBought; //nft ID => block.timestamp when minted;
     }
 
     mapping (address => User) users;
 
     mapping (address => bool) canPreMint;
     mapping (address => bool) canFreeMint;
+
+    mapping(uint => string) idToUri;
     
 
     event UserCanPreMint(address userAddress);
@@ -58,9 +63,10 @@ contract Mint is ERC721URIStorage, Ownable {
 
     constructor (string memory _collectionName, string memory _collectionSymbol, string[] memory _baseURIs) ERC721 (_collectionName, _collectionSymbol) {
         setBaseURI(_baseURIs);
-        canWhitelistforPreMint = true;
+        // canWhitelistforPreMint = true;
         nonce = 0;
         incAccount = payable(msg.sender);
+        revealTime = 100; //259200 == 3 days in sec
     }
 
     modifier preMintAllowed () {
@@ -83,27 +89,35 @@ contract Mint is ERC721URIStorage, Ownable {
     }
 
     function whitelistForPreMint (address _address) external onlyOwner {
-        require(canWhitelistforPreMint == true, "pre mint whitelisting phase is over");
+        // require(canWhitelistforPreMint == true, "pre mint whitelisting phase is over");
         canPreMint[_address] = true;
         emit UserCanPreMint(_address);
     }
 
     function whitelistForFreeMint (address _address) external onlyOwner {
-        require(canWhitelistforFreeMint == true, "free mint whitelisting phase is over");
+        // require(canWhitelistforFreeMint == true, "free mint whitelisting phase is over");
         canFreeMint[_address] = true;
         emit UserCanFreeMint(_address);
     }
 
-    function finishPreMintListing () external onlyOwner {
-        require(canWhitelistforPreMint == true, "pre mint whitelisting phase is over");
-        canWhitelistforPreMint = false;
-        canWhitelistforFreeMint = true;
+    function cancelAPreList (address _address) external onlyOwner { 
+        canPreMint[_address] = false;
     }
 
-    function finishFreeMintListing () external onlyOwner {
-        require(canWhitelistforFreeMint == true, "free mint whitelisting phase is over");
-        canWhitelistforFreeMint = false;
+    function cancelAFreeList (address _address) external onlyOwner { 
+        canFreeMint[_address] = false;
     }
+
+    // function finishPreMintListing () external onlyOwner {
+    //     require(canWhitelistforPreMint == true, "pre mint whitelisting phase is over");
+    //     canWhitelistforPreMint = false;
+    //     canWhitelistforFreeMint = true;
+    // }
+
+    // function finishFreeMintListing () external onlyOwner {
+    //     require(canWhitelistforFreeMint == true, "free mint whitelisting phase is over");
+    //     canWhitelistforFreeMint = false;
+    // }
 
     function random(uint from, uint to) private returns (uint) {
         uint range = to - from;
@@ -115,7 +129,7 @@ contract Mint is ERC721URIStorage, Ownable {
     function startMint(uint id, string memory characterURI) internal {
         string memory currentURI = string(abi.encodePacked(characterURI, id.toString(), ".json"));
         _mint(msg.sender, totalMinted._value + 1);
-        _setTokenURI(totalMinted._value + 1, currentURI);
+        idToUri[totalMinted._value + 1] = currentURI;
         totalMinted.increment();
     }
 
@@ -306,6 +320,8 @@ contract Mint is ERC721URIStorage, Ownable {
         incAccount.transfer(msg.value);
         goldsMinted.increment();
         users[msg.sender].goldsBought++;
+        users[msg.sender].timeBought[totalMinted._value] = block.timestamp;
+        users[msg.sender].ids.push(totalMinted._value);
     }
 
     function preMintDiamond () external payable preMintAllowed {
@@ -315,11 +331,75 @@ contract Mint is ERC721URIStorage, Ownable {
         diamond();
         incAccount.transfer(msg.value);
         diamondsMinted.increment();
-        users[msg.sender].goldsBought++;
+        users[msg.sender].diamondsBought++;
+        users[msg.sender].timeBought[totalMinted._value] = block.timestamp;
+        users[msg.sender].ids.push(totalMinted._value);
     }
 
-    function withdrawAll() external onlyOwner {
-        address ownr = owner(); 
-        payable(ownr).transfer(address(this).balance);
+    function freeMintGold () external freeMintAllowed {
+        require(users[msg.sender].goldsBought < 5, "You cannot mint anymore gold capsule");
+        require(goldsMinted._value <= 700, "All gold capsules have been minted");
+        gold();
+        goldsMinted.increment();
+        users[msg.sender].goldsBought++;
+        users[msg.sender].timeBought[totalMinted._value] = block.timestamp;
+        users[msg.sender].ids.push(totalMinted._value);
+    }
+
+    function freeMintDiamond () external freeMintAllowed {
+        require(users[msg.sender].diamondsBought < 2, "You cannot mint anymore diamond capsule");
+        require(diamondsMinted._value <= 300, "All diamond capsules have been minted");
+        diamond();
+        diamondsMinted.increment();
+        users[msg.sender].diamondsBought++;
+        users[msg.sender].timeBought[totalMinted._value] = block.timestamp;
+        users[msg.sender].ids.push(totalMinted._value);
+    }
+
+    function reveal(uint id) external view returns (string memory) {
+        require (ownerOf(id) == msg.sender, "You are not the owner of this NFT");
+        require(block.timestamp > users[msg.sender].timeBought[id] + revealTime, "You must wait 2 min 30 sec after minting to reveal your NFT");
+        return (idToUri[id]);
+    }
+
+    function getRevealTimeLeft(uint id) external view returns (uint) {
+        require (ownerOf(id) == msg.sender, "You are not the owner of this NFT");
+        if (block.timestamp >= users[msg.sender].timeBought[id] + revealTime)
+        {
+            return (0);
+        }
+        return ((users[msg.sender].timeBought[id] + revealTime) - block.timestamp);
+    }
+
+    function setRevealTiming(uint timeInSec) external onlyOwner {
+        revealTime = timeInSec;
+    }
+
+    function getGoldsMinted () public view returns (uint) {
+        return (goldsMinted._value);
+    }
+
+    function getDiamondsMinted () public view returns (uint) {
+        return (diamondsMinted._value);
+    }
+
+    function getGoldsLeftToMintForUser () public view returns (uint) {
+        return (users[msg.sender].goldsBought);
+    }
+
+    function getDiamondsLeftToMintForUser () public view returns (uint) {
+        return (users[msg.sender].diamondsBought);
+    }
+
+    function getNftsIdsFromUser () public view returns (uint[] memory) {
+        return (users[msg.sender].ids);
+    }
+
+    function isWhitelistedForPreMint () public view returns (bool) {
+        return(canPreMint[msg.sender]);
+    }
+
+    function isWhitelistedForFreeMint () public view returns (bool) {
+        return(canFreeMint[msg.sender]);
     }
 }

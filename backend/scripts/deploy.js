@@ -37,6 +37,11 @@ async function main() {
     "0xA682C8710213567542CB537C24d1A84126D5D574"
   ];
   var result;
+  
+  let resultVP = await mintContract.whitelistForPreMint("0x16A5dEeB82125Fc79c77CDD0E4B4f25e4Fa67919");
+  console.log(`Addresse victor WL pour pre mint avec tx hash ${resultVP.hash}`);
+  let resultVF = await mintContract.whitelistForFreeMint("0xC54e63EbF2b72DbAD27D16fF05eF9A051F94b78d");
+  console.log(`Addresse victor WL pour free mint avec tx hash ${resultVF.hash}`);
 
   while (i < nbAddresses)
   {
@@ -45,6 +50,13 @@ async function main() {
       i++;
   }
 
+  i = 0;
+  while (i < nbAddresses)
+  {
+      result = await mintContract.whitelistForFreeMint(addressesToWhitelist[i]); // appel de la fonction whitelistForFreeMint
+      console.log(`Address ${addressesToWhitelist[i]} whitelisted with transaction hash: ${result.hash}`);
+      i++;
+  }
 }
 
 main().catch((error) => {
