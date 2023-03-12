@@ -20,7 +20,8 @@ export const Header = ({}) => {
                     <ConnectButton />
                     <Text 
                         fontWeight={"bold"} 
-                        fontSize={19}>
+                        fontSize={19}
+                        textDecoration='underline'>
                         Human Divergence Mint
                     </Text>
             </Flex>
