@@ -374,7 +374,6 @@ export default function Home() {
                     direction="column"
                     justifyContent="center"
                     alignItems="center">
-                      <Text fontWeight="bold">Pre MINT</Text>
                       <Text fontWeight="bold" marginLeft="10px">Total gold Capsules left : {goldsLeft}</Text>
                       <Text fontWeight="bold">My gold Capsules: {userGolds}/5</Text>
                       <Button 
@@ -407,7 +406,6 @@ export default function Home() {
                     direction="column"
                     justifyContent="center"
                     alignItems="center">
-                      <Text fontWeight="bold">Pre MINT</Text>
                       <Text fontWeight="bold" marginLeft="10px">Total diamond Capsules left : {diamondsLeft}</Text>
                       <Text fontWeight="bold">My diamond Capsules: {userDiamonds}/2</Text>
                       <Button 
