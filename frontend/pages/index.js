@@ -3,8 +3,6 @@ import Contract from "../../backend/artifacts/contracts/Mint.sol/Mint"
 import { Flex, Text, Input, Button, useToast, Alert, AlertIcon, Image, Box } from '@chakra-ui/react'
 import { useAccount, useProvider, useSigner } from 'wagmi'
 import { ethers } from 'ethers'
-// import goldImg from 'https://bafybeib3hitmx3c67gmmspls5gm77howirksput6zfuhqeqkyx6tmbvvai.ipfs.nftstorage.link/gold.png';
-// import diamond from '../public/diamond.png';
 
 export default function Home() {
 
@@ -16,7 +14,7 @@ export default function Home() {
     // from Chakra-UI
     const toast = useToast();
   
-    const contractAddress = "0x5cA358Cb3e19ef17BF0FbA81Af4431BFC2c1d418";
+    const contractAddress = "0x8DEbcE2359C6e2edf78b43Bc9f5acf097294B4A8";
   
     // The different useStates
     const [owner, setOwner] = useState('');
@@ -44,6 +42,7 @@ export default function Home() {
     const [nbrNfts, setNbrNfts] = useState();
   
     const [isWLPreMint, setisWLpreMint] = useState();
+    const [isWLFreeMint, setisWLFreeMint] = useState();
 
     const [canReveal, setCanReveal] = useState([false, false, false, false, false, false, false]);
 
@@ -169,20 +168,17 @@ export default function Home() {
         console.log("useEffect can reveal 0")
     }, [canReveal, address, isConnected])
 
-    // useEffect(() => { //test
-    //   if (levels)
-    //   {
-    //     logIt();
-    //   }
-    // }, [levels])
-
     useEffect(() => {
       show(currIndex);
       whitelistPreMint();
     }, [levels, currIndex, address, isConnected])
 
     useEffect(() => {
-      whitelistPreMint();
+      if (isConnected)
+      {
+        whitelistPreMint();
+        whitelistFreeMint();
+      }
     }, [isConnected, address])
 
     // Main useEffect to fetch events when the user is connected and load appropriate datas :
@@ -348,10 +344,18 @@ export default function Home() {
 
     const whitelistPreMint = async () => {
       let contractP = new ethers.Contract(contractAddress, Contract.abi, provider);
-      let wl = await contractP.isWhitelistedForPreMint();
+      let wl = await contractP.isWhitelistedForPreMint({from: address});
+      await setisWLFreeMint(wl);
+      console.log("WHITLISTED OU PAS ...???" + isWLFreeMint); 
+    }
+
+    const whitelistFreeMint = async () => {
+      let contractP = new ethers.Contract(contractAddress, Contract.abi, provider);
+      let wl = await contractP.isWhitelistedForFreeMint({from: address});
       await setisWLpreMint(wl);
       console.log("WHITLISTED OU PAS ...???" + isWLPreMint); 
     }
+
 
     return (
       <Flex 
@@ -361,6 +365,16 @@ export default function Home() {
           flexWrap="wrap">
         {isConnected ?
           <>
+              {isWLPreMint ?
+                <Text fontWeight="bold">You are whitelisted for Pre Mint</Text>
+                :
+                <Text fontWeight="bold">You are not whitelisted for Pre Mint</Text>
+              }
+              {isWLFreeMint ?
+                <Text fontWeight="bold">You are whitelisted for Free Mint</Text>
+                :
+                <Text fontWeight="bold">You are not whitelisted for Free Mint</Text>
+              }
               <Flex 
                 border="1px solid black"
                 width="40%" 
@@ -700,7 +714,7 @@ export default function Home() {
             </>
               :
               <Flex height="100%" width="100%" alignItems="center" justifyContent="center">
-              <Alert status='warning' width="250px">
+              <Alert status='warning' width="250px" borderRadius={11}>
                 <AlertIcon />
                 <Flex direction="column">
                   <Text as='span'>Please connect your wallet</Text>
