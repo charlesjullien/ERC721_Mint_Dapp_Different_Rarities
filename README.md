@@ -1,6 +1,6 @@
 # ERC721_Mint_Dapp_Different_Rarities
 
-Here is a basic minting dapp for whitelisted users
+Here is a basic minting dapp for whitelisted users deployed on polygon Mumbai
 
 2 types of whitelist : 
 
@@ -36,6 +36,6 @@ the standard ERC721...
 
 I'll work it out soon. :-)
 
-Contract and Dapps are functional if you are whitelisted. If you want to test it, please contact me so I whitelist you.
+Contract and Dapp are functional if you are whitelisted. If you want to test it, please contact me so I whitelist you.
 
 https://mint-hd-demo.vercel.app/
