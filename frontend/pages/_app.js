@@ -19,7 +19,7 @@ const { chains, provider } = configureChains(
 
 // get connectors for WagmiClient
 const { connectors } = getDefaultWallets({
-  appName: 'Human Divergence',
+  appName: 'Differents NFT Rarity',
   chains
 });
 

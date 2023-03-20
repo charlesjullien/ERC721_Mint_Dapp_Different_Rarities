@@ -7,8 +7,8 @@ export const Header = ({}) => {
     return (
         <>
             <Head>
-                <title>Human Divergence</title>
-                <meta name="description" content="Human Divergence Mint" />
+                <title>Differents NFT Rarity</title>
+                <meta name="description" content="Differents NFT Rarity Mint" />
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
@@ -22,7 +22,7 @@ export const Header = ({}) => {
                         fontWeight={"bold"} 
                         fontSize={19}
                         textDecoration='underline'>
-                        Human Divergence Mint
+                        Differents NFT Rarity Mint
                     </Text>
             </Flex>
         </>
