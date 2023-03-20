@@ -1,10 +1,10 @@
 #!/bin/bash
 
-mkdir Venus Mars_1 Jupiter Uranus Neptune Mars_2
+mkdir Aphrodisia Aresio Zeosine Urania Nelkor Marlavo
 
-bash venus.sh
-bash mars_1.sh
-bash jupiter.sh
-bash uranus.sh
-bash neptune.sh
-bash mars_2.sh
+bash Aphrodisia.sh
+bash Aresio.sh
+bash Zeosine.sh
+bash Urania.sh
+bash Nelkor.sh
+bash Marlavo.sh

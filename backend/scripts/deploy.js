@@ -2,19 +2,19 @@ const hre = require("hardhat");
 const fs = require("fs");
 
 const URIs = [
-  "https://bafybeibccnxylyz2ontxgvmjdxr4j7gms4pbcga5d7wfzh4nh64ybigzku.ipfs.nftstorage.link/",
-  "https://bafybeibkz5v2exikhpovbdtgi6tm5n2wodmz7u6cm2onire7kxksnw32ia.ipfs.nftstorage.link/",
-  "https://bafybeih7aj6nnlqwgq6hxfgdsy7ruoknf7mhhriyquw74jmfdecsfh4koy.ipfs.nftstorage.link/",
-  "https://bafybeifutl5qxjddidimcrublfnrqk3rs2bzm2z6goahxypbayuhlxtcna.ipfs.nftstorage.link/",
-  "https://bafybeibpagcmqkeoz2o2njuavnl57lwf7y56eid2qre4zvlhbio7555n3m.ipfs.nftstorage.link/",
-  "https://bafybeiecvkk7dg4g4ghbl3jy2u5n7xeqsk5cmva2xbniejoomcgrfk4fjy.ipfs.nftstorage.link/"
+  "https://bafybeidi64hoyfixwuazwpgasqolnhju6ngtggllgfcepevnswqhwbgqua.ipfs.nftstorage.link/",
+  "https://bafybeie3rasqj4gostrwlmszumi5gp2io2weojvpetynsintkemguivvdu.ipfs.nftstorage.link/",
+  "https://bafybeie3nvgi4zwg5f3tpviqs2ey4xl3ntpdk2qqgyiz5o3eajcjnnyrle.ipfs.nftstorage.link/",
+  "https://bafybeicmeo5go6dv26ddxy4qeca6b6d25aamkw5j7larmdlrjxtohcyc7m.ipfs.nftstorage.link/",
+  "https://bafybeiflideamovma6oqeeevqyz4i7dizysji65xifirtdcqnvcqonz4wm.ipfs.nftstorage.link/",
+  "https://bafybeibpwcs2y5f6fjuizzd7g7nnnodmdenwipo3t4jvanrdlggrrxc7ui.ipfs.nftstorage.link/"
 ]
 
 async function main() {
 
   // Déploiement des contrats
   const Mint = await hre.ethers.getContractFactory("Mint");
-  const mint = await Mint.deploy("Human Divergence", "HD", URIs);
+  const mint = await Mint.deploy("Differents NFT Rarity", "NDR", URIs);
   await mint.deployed();
 
   console.log(
@@ -31,17 +31,14 @@ async function main() {
   
   var i = 0;
   var nbAddresses = 3;
+
+  //WL for premint + freemint
   var addressesToWhitelist = [
     "0x3A3E5b07cAe317a3718E76437Fb46B0c50235D68",
     "0x1f8255238DDDF0441Fb2dCc5377675122D4Ae484",
     "0xA682C8710213567542CB537C24d1A84126D5D574"
   ];
   var result;
-  
-  let resultVP = await mintContract.whitelistForPreMint("0x16A5dEeB82125Fc79c77CDD0E4B4f25e4Fa67919");
-  console.log(`Addresse victor WL pour pre mint avec tx hash ${resultVP.hash}`);
-  let resultVF = await mintContract.whitelistForFreeMint("0xC54e63EbF2b72DbAD27D16fF05eF9A051F94b78d");
-  console.log(`Addresse victor WL pour free mint avec tx hash ${resultVF.hash}`);
 
   while (i < nbAddresses)
   {
@@ -63,5 +60,3 @@ main().catch((error) => {
   console.error(error);
   process.exitCode = 1;
 });
-
-// "https://bafybeibccnxylyz2ontxgvmjdxr4j7gms4pbcga5d7wfzh4nh64ybigzku.ipfs.nftstorage.link/, https://bafybeibkz5v2exikhpovbdtgi6tm5n2wodmz7u6cm2onire7kxksnw32ia.ipfs.nftstorage.link/, https://bafybeih7aj6nnlqwgq6hxfgdsy7ruoknf7mhhriyquw74jmfdecsfh4koy.ipfs.nftstorage.link/, https://bafybeifutl5qxjddidimcrublfnrqk3rs2bzm2z6goahxypbayuhlxtcna.ipfs.nftstorage.link/, https://bafybeibpagcmqkeoz2o2njuavnl57lwf7y56eid2qre4zvlhbio7555n3m.ipfs.nftstorage.link/, https://bafybeiecvkk7dg4g4ghbl3jy2u5n7xeqsk5cmva2xbniejoomcgrfk4fjy.ipfs.nftstorage.link/"

@@ -6,6 +6,6 @@ MYARR2="${MYARR[@]}"
 
 echo $MYARR2
 
-yarn hardhat verify --network polygonMumbai 0x415B1B8c5A3080678269c1220d180e7a811F7D2b "Human Divergence" "HD" "$MYARR2"
+yarn hardhat verify --network polygonMumbai 0x415B1B8c5A3080678269c1220d180e7a811F7D2b "Differents NFT Rarity" "HD" "$MYARR2"
 
 
