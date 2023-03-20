@@ -11,14 +11,21 @@ each whitelisted user can have only 5 gold capsules and 2 diamond ones.
 
 in a Gold capsule here is the drop rate :
 50% chance of getting the 'Aphrodisia' NFT character.
+
 35% chance of getting the 'Aresio' NFT character.
+
 15% chance of getting the 'Zeosine' NFT character.
+
 
 in a Diamond capsule here is the drop rate :
 35% chance of getting the 'Zeosine' NFT character.
+
 30% chance of getting the 'Urania' NFT character.
+
 17.8% chance of getting the 'Nelkor' NFT character.
+
 17.2% chance of getting the 'Marlavo' NFT character.
+
 
 I added a functionality so users can reveal their NFT and see the character 100 sec after purchase. (this value can be modified by contract owner).
 Something I have to change is the way I store the URI in the contract.
